@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CramNerd | School Management System | Dev Ofori</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #8B4513; /* SaddleBrown */
+            --primary-light: #a85e2d;
+            --secondary: #D2B48C; /* Tan */
+            --dark: #2A1E15; /* Darker brown */
+            --dark-alt: #3E2C20; /* Darker brown */
+            --light: #F8F5F0; /* Light Beige */
+            --light-alt: #F5F5DC; /* Beige */
+            --gray: #A9A9A9; /* DarkGray */
+            --gray-light: #D9D9D9;
+            --success: #8FBC8F; /* DarkSeaGreen */
+            --danger: #CD5C5C; /* IndianRed */
+            --warning: #F4A460; /* SandyBrown */
+            --info: #20B2AA; /* LightSeaGreen */
+            --border-radius: 12px;
+            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+
+        .btn-gradient {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(139, 69, 19, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        header {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(42, 30, 21, 0.95);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(210, 180, 140, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 10px;
+        }
+
+        nav ul li a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 18px;
+            border-radius: 50px;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+
+        nav ul li a:hover {
+            color: var(--secondary);
+            background: rgba(210, 180, 140, 0.1);
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: rgba(210, 180, 140, 0.1);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            justify-content: center;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .mobile-menu:hover {
+            background: rgba(210, 180, 140, 0.2);
+        }
+
+        .hero {
+            padding: 180px 5% 120px;
+            text-align: center;
+            background: linear-gradient(rgba(42, 30, 21, 0.85), rgba(42, 30, 21, 0.95)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23d2b48c' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 24px;
+            line-height: 1.2;
+            font-weight: 800;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin: 0 auto 40px;
+            color: rgba(248, 245, 240, 0.9);
+            max-width: 700px;
+            line-height: 1.7;
+        }
+
+        .hero p a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border-bottom: 1px solid transparent;
+        }
+
+        .hero p a:hover {
+            border-bottom: 1px solid var(--secondary);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .features {
+            padding: 100px 5%;
+            background-color: var(--dark-alt);
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+
+        .section-title h2 {
+            font-size: 2.8rem;
+            margin-bottom: 18px;
+            font-weight: 700;
+        }
+
+        .section-title p {
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background-color: var(--dark);
+            border-radius: var(--border-radius);
+            padding: 35px 30px;
+            transition: var(--transition);
+            border: 1px solid rgba(210, 180, 140, 0.1);
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            transform-origin: top center;
+            transform: perspective(1000px) rotateX(-90deg);
+            opacity: 0;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                        opacity 0.8s ease,
+                        box-shadow 0.3s ease,
+                        border-color 0.3s ease;
+        }
+
+        .feature-card.visible {
+            opacity: 1;
+            transform: perspective(1000px) rotateX(0deg);
+        }
+
+        .feature-card:hover {
+            transform: perspective(1000px) rotateX(0deg) translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            border-color: rgba(210, 180, 140, 0.2);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.1), rgba(210, 180, 140, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .feature-icon i {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            color: var(--gray-light);
+            margin-bottom: 0;
+            line-height: 1.7;
+        }
+
+        .modules {
+            padding: 100px 5%;
+            background-color: var(--dark);
+        }
+
+        .tabs {
+            display: inline-flex;
+            justify-content: center;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+            background: var(--dark-alt);
+            padding: 8px;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-btn {
+            padding: 14px 32px;
+            background: none;
+            border: none;
+            color: var(--light);
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+            border-radius: 50px;
+            font-size: 0.95rem;
+        }
+
+        .tab-btn.active {
+            color: white;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+            transform-origin: top center;
+            transform: perspective(1000px) rotateX(-90deg);
+            opacity: 0;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                        opacity 0.8s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+            opacity: 1;
+            transform: perspective(1000px) rotateX(0deg);
+            animation: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .module-card {
+            background-color: var(--dark-alt);
+            border-radius: var(--border-radius);
+            padding: 50px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(210, 180, 140, 0.1);
+            transform-origin: top center;
+            transform: perspective(1000px) rotateX(-90deg);
+            opacity: 0;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                        opacity 0.8s ease;
+        }
+
+        .module-card.visible {
+            opacity: 1;
+            transform: perspective(1000px) rotateX(0deg);
+        }
+
+        .module-info h3 {
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        .module-info ul {
+            list-style: none;
+            margin-bottom: 35px;
+        }
+
+        .module-info ul li {
+            margin-bottom: 14px;
+            position: relative;
+            padding-left: 32px;
+            color: var(--gray-light);
+            line-height: 1.6;
+        }
+
+        .module-info ul li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            background: rgba(139, 69, 19, 0.1);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .module-chart {
+            background-color: var(--dark);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            height: 100%;
+            min-height: 320px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(210, 180, 140, 0.05);
+        }
+
+        .stats {
+            padding: 100px 5%;
+            background-color: var(--dark-alt);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--dark);
+            border-radius: var(--border-radius);
+            padding: 40px 30px;
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(210, 180, 140, 0.1);
+            transform-origin: top center;
+            transform: perspective(1000px) rotateX(-90deg);
+            opacity: 0;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                        opacity 0.8s ease,
+                        box-shadow 0.3s ease;
+        }
+
+        .stat-card.visible {
+            opacity: 1;
+            transform: perspective(1000px) rotateX(0deg);
+        }
+
+        .stat-card:hover {
+            transform: perspective(1000px) rotateX(0deg) translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.1), rgba(210, 180, 140, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+        }
+
+        .stat-icon i {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .stat-card h3 {
+            font-size: 3.2rem;
+            margin-bottom: 12px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+
+        .stat-card p {
+            color: var(--gray-light);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .testimonials {
+            padding: 100px 5%;
+            background-color: var(--dark);
+        }
+
+        .testimonial-slider {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .testimonial {
+            background-color: var(--dark-alt);
+            border-radius: var(--border-radius);
+            padding: 50px;
+            text-align: center;
+            display: none;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(210, 180, 140, 0.1);
+            transform-origin: top center;
+            transform: perspective(1000px) rotateX(-90deg);
+            opacity: 0;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                        opacity 0.8s ease;
+        }
+
+        .testimonial.active {
+            display: block;
+            opacity: 1;
+            transform: perspective(1000px) rotateX(0deg);
+            animation: none;
+        }
+
+        .testimonial-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 25px;
+            border: 3px solid var(--primary);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .testimonial p {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            font-style: italic;
+            color: rgba(248, 245, 240, 0.9);
+            line-height: 1.8;
+            position: relative;
+        }
+
+        .testimonial p::before,
+        .testimonial p::after {
+            content: '"';
+            font-size: 4rem;
+            color: var(--primary);
+            opacity: 0.2;
+            position: absolute;
+            line-height: 1;
+        }
+
+        .testimonial p::before {
+            top: -20px;
+            left: -25px;
+        }
+
+        .testimonial p::after {
+            bottom: -40px;
+            right: -25px;
+        }
+
+        .testimonial h4 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .testimonial span {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+
+        .slider-nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+            gap: 10px;
+        }
+
+        .slider-dot {
+            width: 14px;
+            height: 14px;
+            background-color: var(--gray);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .slider-dot.active {
+            background-color: var(--primary);
+            transform: scale(1.3);
+            box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.3);
+        }
+
+        .cta {
+            padding: 120px 5%;
+            text-align: center;
+            background: linear-gradient(rgba(42, 30, 21, 0.9), rgba(42, 30, 21, 0.95)), url('https://images.unsplash.com/photo-1588072432836-e10032774350?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23d2b48c' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta h2 {
+            font-size: 2.8rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        .cta p {
+            max-width: 700px;
+            margin: 0 auto 50px;
+            color: rgba(248, 245, 240, 0.9);
+            font-size: 1.2rem;
+            line-height: 1.7;
+        }
+
+        footer {
+            background-color: var(--dark-alt);
+            padding: 80px 5% 40px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 50px;
+            margin-bottom: 50px;
+        }
+
+        .footer-col {
+            transform-origin: top center;
+            transform: perspective(1000px) rotateX(-90deg);
+            opacity: 0;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                        opacity 0.8s ease;
+        }
+
+        .footer-col.visible {
+            opacity: 1;
+            transform: perspective(1000px) rotateX(0deg);
+        }
+
+        .footer-col h3 {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+        }
+
+        .footer-col p {
+            color: var(--gray-light);
+            margin-bottom: 25px;
+            line-height: 1.7;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 14px;
+        }
+
+        .footer-links a {
+            color: var(--gray-light);
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .footer-links a i {
+            font-size: 0.8rem;
+        }
+
+        .contact-info {
+            list-style: none;
+        }
+
+        .contact-info li {
+            margin-bottom: 16px;
+            color: var(--gray-light);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .contact-info li i {
+            color: var(--primary);
+            width: 20px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background-color: var(--dark);
+            border-radius: 50%;
+            color: var(--light);
+            transition: var(--transition);
+            font-size: 1.1rem;
+        }
+
+        .social-links a:hover {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid rgba(248, 245, 240, 0.1);
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .copyright a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .copyright a:hover {
+            color: var(--primary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .module-card {
+                gap: 40px;
+                padding: 40px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .module-card {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .module-chart {
+                min-height: 350px;
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 80%;
+                height: calc(100vh - 80px);
+                background-color: var(--dark-alt);
+                flex-direction: column;
+                padding: 40px 20px;
+                transition: left 0.3s ease;
+                box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2);
+                z-index: 999;
+            }
+
+            nav.active {
+                left: 0;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            nav ul li {
+                margin: 5px 0;
+            }
+
+            nav ul li a {
+                display: block;
+                padding: 15px 20px;
+                border-radius: 10px;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+
+            .hero {
+                padding: 150px 5% 100px;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .hero-buttons .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .section-title h2 {
+                font-size: 2.3rem;
+            }
+            
+            .tabs {
+                width: 100%;
+            }
+            
+            .tab-btn {
+                flex: 1;
+                text-align: center;
+                padding: 12px 20px;
+            }
+            
+            .testimonial {
+                padding: 40px 30px;
+            }
+            
+            .testimonial p {
+                font-size: 1.1rem;
+            }
+            
+            .testimonial p::before {
+                left: -15px;
+            }
+            
+            .testimonial p::after {
+                right: -15px;
+            }
+            
+            .cta h2 {
+                font-size: 2.3rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .feature-card {
+                padding: 25px 20px;
+            }
+            
+            .module-card {
+                padding: 30px 25px;
+            }
+            
+            .module-info h3 {
+                font-size: 1.8rem;
+            }
+            
+            .testimonial {
+                padding: 30px 25px;
+            }
+            
+            .cta {
+                padding: 80px 5%;
+            }
+            
+            .cta h2 {
+                font-size: 2rem;
+            }
+            
+            .footer-grid {
+                gap: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            <span class="gradient-text">CramNerd | Asnat AI</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#modules">Modules</a></li>
+                <li><a href="#stats">Stats</a></li>
+                <li><a href="#testimonials">Testimonials</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="mobile-menu">
+            <i class="fas fa-bars"></i>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Revolutionize Your School <span class="gradient-text">Management</span></h1>
+            <p>A comprehensive, secure, and user-friendly platform designed to streamline administrative tasks, enhance communication, and improve academic management for schools with the Asnat Students AI Assistant founded by <a href="https://www.devofori.com">Dev Ofori</a> Richard Rockson.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-gradient"><i class="fas fa-play-circle"></i> Request Demo</button>
+                <button class="btn btn-outline"><i class="fas fa-info-circle"></i> Learn More</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Powerful <span class="gradient-text">Features</span></h2>
+                <p>Discover how our School Management System can transform your educational institution</p>
+            </div>
+           
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3>Role-Based Access</h3>
+                    <p>Secure role-based authentication ensures only authorized users access sensitive data with encrypted storage.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI-Proctored Exams</h3>
+                    <p>Auto-captures candidate images to prevent malpractice with real-time facial detection monitoring.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3>Real-Time Alerts</h3>
+                    <p>Automated email notifications for assignments, fees, admissions, announcements and more.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Cross-Platform</h3>
+                    <p>Accessible on Windows, Mac, Web and Mobile with synchronized data across all platforms.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Advanced Analytics</h3>
+                    <p>Comprehensive reports and visualizations for student performance and institutional metrics.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Built-In Website</h3>
+                    <p>Optional customizable school website with direct integration to the management system.</p>
+                </div>
+           
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>Communication Via Chat forums</h3>
+                    <p>Students can have live conversations with teachers and colleagues, privately or through forums</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-ai"></i>
+                    </div>
+                    <h3>Asnat Students AI</h3>
+                    <p>CramNerd itself has a built in AI to guide and assist Students in their studies through chats and live conversations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="modules" id="modules">
+        <div class="container">
+            <div class="section-title">
+                <h2>Integrated <span class="gradient-text">Modules</span></h2>
+                <p>Three specialized modules designed for each user group in your institution</p>
+            </div>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="admin">Admin</button>
+                <button class="tab-btn" data-tab="teacher">Teacher</button>
+                <button class="tab-btn" data-tab="student">Student</button>
+            </div>
+            <div class="tab-content active" id="admin">
+                <div class="module-card">
+                    <div class="module-info">
+                        <h3>Admin Management Module</h3>
+                        <ul>
+                            <li>Student Enrollment & Profile Management</li>
+                            <li>Admission Management with Online Screening</li>
+                            <li>Automated Fee Management & Reminders</li>
+                            <li>Customizable Grading System Setup</li>
+                            <li>User Access Control & Credential Management</li>
+                            <li>School-wide Announcements & Events</li>
+                            <li>Optional Built-In School Website</li>
+                        </ul>
+                        <button class="btn btn-gradient">Learn More</button>
+                    </div>
+                    <div class="module-chart">
+                        <canvas id="adminChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-content" id="teacher">
+                <div class="module-card">
+                    <div class="module-info">
+                        <h3>Teacher's Portal</h3>
+                        <ul>
+                            <li>Attendance Management & Reporting</li>
+                            <li>Grading System with Performance Analytics</li>
+                            <li>Assignment Creation & Distribution</li>
+                            <li>Deadline Tracking & Submission Guidelines</li>
+                            <li>Real-time Communication Alerts</li>
+                            <li>Student Interaction via Chat Forum</li>
+                            <li>Web & Android App Access</li>
+                        </ul>
+                        <button class="btn btn-gradient">Learn More</button>
+                    </div>
+                    <div class="module-chart">
+                        <canvas id="teacherChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-content" id="student">
+                <div class="module-card">
+                    <div class="module-info">
+                        <h3>Student's Portal</h3>
+                        <ul>
+                            <li>Asnat Students AI</li>
+                            <li>Assignment Viewing & Submission</li>
+                            <li>Deadline Reminders & Tracking</li>
+                            <li>School Announcements & Events</li>
+                            <li>Fee Payment History & Tracking</li>
+                            <li>Academic Performance Reports</li>
+                            <li>Attendance Record Monitoring</li>
+                            <li>Web & Mobile-Friendly Access</li>
+                            <li>Realtime Communication</li>
+                        </ul>
+                        <button class="btn btn-gradient">Learn More</button>
+                    </div>
+                    <div class="module-chart">
+                        <canvas id="studentChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats" id="stats">
+        <div class="container">
+            <div class="section-title">
+                <h2>By The <span class="gradient-text">Numbers</span></h2>
+                <p>Key statistics that demonstrate the impact of our School Management System</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-school"></i>
+                    </div>
+                    <h3>250+</h3>
+                    <p>Schools Transformed</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>50K+</h3>
+                    <p>Active Users</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <h3>85%</h3>
+                    <p>Admin Tasks Automated</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <h3>4.9/5</h3>
+                    <p>User Satisfaction</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-title">
+                <h2>What Our <span class="gradient-text">Clients Say</span></h2>
+                <p>Hear from educational institutions that have transformed with our system</p>
+            </div>
+            <div class="testimonial-slider">
+                <div class="testimonial active">
+                    <img src="Manni.jpg" alt="Hweakwae D/A JHS" class="testimonial-avatar">
+                    <p>"Implementing CramNerd SMS has revolutionized our school administration. The AI-proctored Admission exams alone have saved us countless hours of monitoring while ensuring academic integrity."</p>
+                    <h4> Sir Charlce Tenkrong</h4>
+                    <span>Assistant Headmaster, Hweakwae D/A JHS </span>
+                </div>
+                <div class="testimonial">
+                    <img src="chandra.jpg" alt="Chandra Banahene" class="testimonial-avatar">
+                    <p>"The teacher portal has made managing my classes so much easier. I can track attendance, grade assignments, and communicate with students all from one platform."</p>
+                    <h4>Madam Chandra Banahene</h4>
+                    <span>High School Principal,UK</span>
+                </div>
+                <div class="testimonial">
+                    <img src="Godfred.jpg" alt="Michael Chen" class="testimonial-avatar">
+                    <p>"As a school administrator, the comprehensive reporting and analytics have given me insights I never had before. We've improved operational efficiency by 40% since implementation."</p>
+                    <h4>Godfred Adjewi</h4>
+                    <span>School District Administrator</span>
+                </div>
+                <div class="slider-nav">
+                    <div class="slider-dot active" data-slide="0"></div>
+                    <div class="slider-dot" data-slide="1"></div>
+                    <div class="slider-dot" data-slide="2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="cta-content">
+            <h2>Ready to Transform Your School?</h2>
+            <p>Join hundreds of educational institutions that have streamlined their operations and enhanced learning with our comprehensive School Management System.</p>
+            <button class="btn btn-gradient">Get Started Today</button>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>CramNerd | Asnat</h3>
+                    <p>A comprehensive, secure,AI-powered, and user-friendly platform designed to streamline administrative tasks, enhance communication, and improve academic management for schools.</p>
+                    <div class="social-links">
+                        <a href="wa.me//+233597695742"><i class="fab fa-whatsapp"></i></a>
+                        <a href="tel:+971582540832"><i class="fas fa-phone"></i></a>
+                        <a href="mailto:oforirockson@proton.me"><i class="fas fa-envelope"></i></a>
+                        <a href="https://www.tiktok.com/@devofori?is_from_webapp=1&sender_device=pc"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#features"><i class="fas fa-chevron-right"></i> Features</a></li>
+                        <li><a href="#modules"><i class="fas fa-chevron-right"></i> Modules</a></li>
+                        <li><a href="#stats"><i class="fas fa-chevron-right"></i> Statistics</a></li>
+                        <li><a href="#testimonials"><i class="fas fa-chevron-right"></i> Testimonials</a></li>
+                        <li><a href="#contact"><i class="fas fa-chevron-right"></i> Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Modules</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Admin Management</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Teacher's Portal</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Student's Portal</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Built-In Website</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Security Features</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact Us</h3>
+                    <ul class="contact-info">
+                        <li><i class="fas fa-envelope"></i> Cramnerd@gmail.com</li>
+                        <li><i class="fas fa-globe"></i> www.Cramnerd.com</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Cyberspace</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 CramNerd | All Rights Reserved | <a href="https://wwww.devofori.com">Dev Ofori</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu');
+        const nav = document.querySelector('nav');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            nav.classList.toggle('active');
+            mobileMenuBtn.innerHTML = nav.classList.contains('active') ? 
+                '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+        });
+
+        // Smooth Scrolling for Anchor Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                nav.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Tab System
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+                
+                // Remove active class from all buttons and contents
+                tabBtns.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding content
+                btn.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Testimonial Slider
+        const testimonials = document.querySelectorAll('.testimonial');
+        const dots = document.querySelectorAll('.slider-dot');
+        let currentTestimonial = 0;
+
+        function showTestimonial(index) {
+            testimonials.forEach(testimonial => testimonial.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            
+            testimonials[index].classList.add('active');
+            dots[index].classList.add('active');
+            currentTestimonial = index;
+        }
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const slideIndex = parseInt(dot.getAttribute('data-slide'));
+                showTestimonial(slideIndex);
+            });
+        });
+
+        // Auto-rotate testimonials
+        setInterval(() => {
+            currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+            showTestimonial(currentTestimonial);
+        }, 5000);
+
+        // Scroll Animation for Cards
+        const featureCards = document.querySelectorAll('.feature-card');
+        const moduleCards = document.querySelectorAll('.module-card');
+        const statCards = document.querySelectorAll('.stat-card');
+        const footerCols = document.querySelectorAll('.footer-col');
+        
+        function checkScroll() {
+            const triggerBottom = window.innerHeight * 0.8;
+            
+            // Feature cards animation
+            featureCards.forEach((card, index) => {
+                const cardTop = card.getBoundingClientRect().top;
+                
+                if (cardTop < triggerBottom) {
+                    setTimeout(() => {
+                        card.classList.add('visible');
+                    }, index * 100); // Stagger the animation
+                }
+            });
+            
+            // Module cards animation
+            moduleCards.forEach(card => {
+                const cardTop = card.getBoundingClientRect().top;
+                
+                if (cardTop < triggerBottom) {
+                    card.classList.add('visible');
+                }
+            });
+            
+            // Stat cards animation
+            statCards.forEach((card, index) => {
+                const cardTop = card.getBoundingClientRect().top;
+                
+                if (cardTop < triggerBottom) {
+                    setTimeout(() => {
+                        card.classList.add('visible');
+                    }, index * 100); // Stagger the animation
+                }
+            });
+            
+            // Footer columns animation
+            footerCols.forEach((col, index) => {
+                const colTop = col.getBoundingClientRect().top;
+                
+                if (colTop < triggerBottom) {
+                    setTimeout(() => {
+                        col.classList.add('visible');
+                    }, index * 100); // Stagger the animation
+                }
+            });
+        }
+
+        // Initial check on page load
+        window.addEventListener('load', () => {
+            // Make hero section visible immediately
+            document.querySelector('.hero-content').style.opacity = 1;
+            document.querySelector('.hero-content').style.transform = 'translateY(0)';
+            
+            checkScroll();
+        });
+        
+        // Check on scroll
+        window.addEventListener('scroll', checkScroll);
+
+        // Charts
+        function initCharts() {
+            // Admin Chart
+            const adminCtx = document.getElementById('adminChart').getContext('2d');
+            new Chart(adminCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Enrollment', 'Admissions', 'Fees', 'Grading', 'Security', 'Website'],
+                    datasets: [{
+                        label: 'Admin Module Usage',
+                        data: [85, 78, 92, 88, 95, 65],
+                        backgroundColor: [
+                            'rgba(139, 69, 19, 0.7)',
+                            'rgba(210, 180, 140, 0.7)',
+                            'rgba(139, 69, 19, 0.7)',
+                            'rgba(210, 180, 140, 0.7)',
+                            'rgba(139, 69, 19, 0.7)',
+                            'rgba(210, 180, 140, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(139, 69, 19, 1)',
+                            'rgba(210, 180, 140, 1)',
+                            'rgba(139, 69, 19, 1)',
+                            'rgba(210, 180, 140, 1)',
+                            'rgba(139, 69, 19, 1)',
+                            'rgba(210, 180, 140, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(245, 245, 220, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(245, 245, 220, 0.7)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(245, 245, 220, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(245, 245, 220, 0.7)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Teacher Chart
+            const teacherCtx = document.getElementById('teacherChart').getContext('2d');
+            new Chart(teacherCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Attendance', 'Grading', 'Assignments', 'Communication'],
+                    datasets: [{
+                        data: [30, 25, 30, 15],
+                        backgroundColor: [
+                            'rgba(139, 69, 19, 0.7)',
+                            'rgba(210, 180, 140, 0.7)',
+                            'rgba(139, 69, 19, 0.5)',
+                            'rgba(210, 180, 140, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgba(139, 69, 19, 1)',
+                            'rgba(210, 180, 140, 1)',
+                            'rgba(139, 69, 19, 1)',
+                            'rgba(210, 180, 140, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: 'rgba(245, 245, 220, 0.7)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Student Chart
+            const studentCtx = document.getElementById('studentChart').getContext('2d');
+            new Chart(studentCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Assignment Submissions',
+                        data: [65, 59, 80, 81, 76, 95],
+                        fill: true,
+                        backgroundColor: 'rgba(139, 69, 19, 0.2)',
+                        borderColor: 'rgba(139, 69, 19, 1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Attendance',
+                        data: [80, 85, 78, 92, 88, 90],
+                        fill: true,
+                        backgroundColor: 'rgba(210, 180, 140, 0.2)',
+                        borderColor: 'rgba(210, 180, 140, 1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(245, 245, 220, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(245, 245, 220, 0.7)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(245, 245, 220, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(245, 245, 220, 0.7)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'rgba(245, 245, 220, 0.7)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize charts when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initCharts);
+    </script>
+</body>
+</html>
